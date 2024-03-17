@@ -1,0 +1,59 @@
+[
+  {
+    "numero": 1,
+    "nimi": "Iivo Niskanen",
+    "kansallisuus": "Suomi",
+    "sarja": "M"
+  },
+  {
+    "numero": 2,
+    "nimi": "Kasper Stadaas",
+    "kansallisuus": "Norja",
+    "sarja": "M"
+  },
+  {
+    "numero": 3,
+    "nimi": "Alvar Myhlback",
+    "kansallisuus": "Ruotsi",
+    "sarja": "M"
+  },
+  { "numero": 4, "nimi": "Amund Riege", "kansallisuus": "Norja", "sarja": "M" },
+  { "numero": 5, "nimi": "Max Novakl", "kansallisuus": "Ruotsi", "sarja": "M" },
+  {
+    "numero": 6,
+    "nimi": "Perttu Hyvärinen",
+    "kansallisuus": "Suomi",
+    "sarja": "M"
+  },
+  {
+    "numero": 7,
+    "nimi": "Kerttu Niskanen",
+    "kansallisuus": "Suomi",
+    "sarja": "N"
+  },
+  {
+    "numero": 8,
+    "nimi": "Anikken Gjerde",
+    "kansallisuus": "Norja",
+    "sarja": "N"
+  },
+  {
+    "numero": 9,
+    "nimi": "Louise Lindström",
+    "kansallisuus": "Ruotsi",
+    "sarja": "N"
+  },
+  {
+    "numero": 10,
+    "nimi": "Anja Stolpe",
+    "kansallisuus": "Norja",
+    "sarja": "N"
+  },
+  {
+    "numero": 11,
+    "nimi": "Hanna Lodin",
+    "kansallisuus": "Ruotsi",
+    "sarja": "N"
+  },
+  { "numero": 12, "nimi": "Kati Roivas", "kansallisuus": "Suomi", "sarja": "N" }
+]

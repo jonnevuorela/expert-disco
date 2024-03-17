@@ -1,2 +1,19 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+    import Router from "svelte-spa-router";
+    import Home from "./Home.svelte";
+    import Counter from "./Counter.svelte";
+    import Converter from "./Converter.svelte";
+    import Weather from "./Weather.svelte";
+    import Compensation from "./Compensation.svelte";
+    import Participants from "./Participants.svelte";
+    const routes = {
+        "/": Home,
+        "/Counter": Counter,
+        "/Converter": Converter,
+        "/Weather": Weather,
+        "/Compensation": Compensation,
+        "/Participants": Participants,
+    };
+</script>
+
+<Router {routes} />

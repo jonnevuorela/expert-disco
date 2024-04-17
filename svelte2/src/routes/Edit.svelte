@@ -1,12 +1,13 @@
 <script>
     let posts = [];
-    let selectedPost;
+    let selectedPost = {};
     let editPost;
 
     function showForm() {
         fetch(`https://jsonplaceholder.typicode.com/posts/${selectedPost}`)
             .then((response) => response.json())
             .then((json) => (editPost = json));
+        console.log("selected", selectedPost);
     }
     function save() {
         fetch(`https://jsonplaceholder.typicode.com/posts/${editPost.id}`, {
@@ -48,6 +49,15 @@
             <span>Title</span>
             <input bind:value={editPost.title} />
         </div>
+        <div>
+            <span>Body</span>
+            <input bind:value={editPost.body} />
+        </div>
+        <div>
+            <span>UserId</span>
+            <input bind:value={editPost.id} />
+        </div>
+
         <button on:click={save}>Save</button>
     </form>
 {/if}

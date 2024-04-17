@@ -4,12 +4,14 @@
     import Add from "./Add.svelte";
     import Edit from "./Edit.svelte";
     import Posts from "./Posts.svelte";
+    import Delete from "./Delete.svelte";
 
     const routes = {
         "/": Home,
         "/Add": Add,
         "/Edit": Edit,
         "/Posts": Posts,
+        "/Delete": Delete,
     };
 </script>
 
@@ -19,6 +21,7 @@
         <a href="/#/Add">Add</a>
         <a href="/#/Edit">Edit</a>
         <a href="/#/Posts">Posts</a>
+        <a href="/#/Delete">Delete</a>
     </nav>
 </div>
 <Router {routes} />

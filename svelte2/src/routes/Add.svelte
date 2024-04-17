@@ -1,6 +1,14 @@
 <script>
+    import { onMount } from "svelte";
     let m_title, m_body, m_userId;
+    let users = [];
+    let user = {};
+
+    onMount(getUser);
+
     function save() {
+        m_userId = user;
+
         fetch(`https://jsonplaceholder.typicode.com/posts`, {
             method: "POST",
             body: JSON.stringify({
@@ -14,9 +22,21 @@
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log(json);
+                console.log("json from save()", json);
                 (m_title = ""), (m_body = ""), (m_userId = "");
                 alert(`Post \"${json.title}\" saved`);
+            });
+    }
+    function getUser() {
+        fetch("https://jsonplaceholder.typicode.com/users", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                users = json;
             });
     }
 </script>
@@ -32,8 +52,13 @@
         <input bind:value={m_body} />
     </div>
     <div>
-        <span>UserId</span>
-        <input bind:value={m_userId} />
+        <span>User</span>
+
+        <select bind:value={user}>
+            {#each users as user}
+                <option value={(user.name, user.id)}>{user.name}</option>
+            {/each}
+        </select>
     </div>
     <button on:click={save}>Save</button>
 </form>

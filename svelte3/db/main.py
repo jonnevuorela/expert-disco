@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
-cors = CORS(app)
+CORS(app)
 
 # Initialize PyMySQL using configuration variables
 db = pymysql.connect(
@@ -29,27 +29,35 @@ def get_osallistujat():
         return jsonify(results)
     except Exception as e:
         return jsonify(format(e), 500)
-@app.route("/osallistujat/<int:id>")
-def get_numero(id):
-    try:
-        cursor = db.cursor()
-        cursor.execute("SELECT * FROM osallistujat WHERE id=%s" % id)
-        results = cursor.fetchall()
-        columns = get_column_names(cursor)
-        data = create_dict_data(results, columns)
-        cursor.close()
-        return jsonify(data)
-    except Exception as e:
-        return jsonify(format(e), 500)
-@app.route("/osallistujat/<int:id>", methods=["PUT"])
-def replace(id):
-    try:
-        cursor = db.cursor()
-        data = request.get_json()
-        values=[]
-        columns = []
-        for column, value in data.items():
-            values.append(value)
+@app.route("/osallistujat/<int:id>", methods=["GET", "PATCH"])
+def osallistujat(id):
+    if request.method == "GET":
+        try:
+            cursor = db.cursor()
+            cursor.execute("SELECT * FROM osallistujat WHERE id=%s", (id,))
+            results = cursor.fetchall()
+            columns = get_column_names(cursor)
+            data = create_dict_data(results, columns)
+            cursor.close()
+            return jsonify(data)
+        except Exception as e:
+            return jsonify(format(e), 500)
+    elif request.method == "PATCH":
+        try:
+            cursor = db.cursor()
+            data = request.get_json()
+            values=[]
+            columns = []
+            for column, value in data.items():
+                columns.append(f"{column} = %s")
+                values.append(value)
+            values.append(id)
+            query=f"UPDATE osallistujat SET {', '.join(columns)} WHERE id = %s"
+            cursor.execute(query, values)
+            db.commit()
+            return jsonify({"message": "Tietokannan päivitys onnistui"}), 200
+        except Exception as e:
+            return jsonify(format(e), 500)
 
 def get_column_names(cursor):
     description = cursor.description
@@ -59,11 +67,9 @@ def get_column_names(cursor):
         columns.append(column_name)
     return columns
 
-def create_dict_data(results, column_names):
+def create_dict_data(results):
     dict_data = []
     for r in results:
-        row_zip = zip(column_names, r)
-        row_dict = dict(row_zip)
-        dict_data.append(row_dict)
+        dict_data.append(dict(r))
     return dict_data
 

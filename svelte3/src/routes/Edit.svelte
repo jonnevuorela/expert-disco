@@ -21,7 +21,7 @@
         etunimi: "",
         sukunimi: "",
         sarja: "",
-        numero: "",
+        id: "",
         kansallisuus: "",
     };
 
@@ -40,7 +40,13 @@
             .then((json) => (editOsallistuja = json));
     }
 
-    function save() {
+    async function save() {
+        if (!edited.etunimi) edited.etunimi = selectedOsallistuja.etunimi;
+        if (!edited.sukunimi) edited.sukunimi = selectedOsallistuja.sukunimi;
+        if (!edited.id) edited.id = selectedOsallistuja.id;
+        if (!edited.sarja) edited.sarja = selectedOsallistuja.sarja;
+        if (!edited.kansallisuus)
+            edited.kansallisuus = selectedOsallistuja.kansallisuus;
         fetch(`http://localhost:5000/osallistujat/${selectedOsallistuja.id}`, {
             method: "PATCH",
             body: JSON.stringify(edited),
@@ -53,8 +59,9 @@
                 console.log(json);
                 editOsallistuja = null;
                 alert(
-                    `Osallistujaa\"${json.etunimi} ${json.sukunimi}\" muokattu`,
+                    `Osallistujaa \"${selectedOsallistuja.etunimi} ${selectedOsallistuja.sukunimi}\" muokattu`,
                 );
+                window.location.reload();
             });
     }
     $: console.log("selectedOsallistuja", selectedOsallistuja);
@@ -146,11 +153,11 @@
             <div id="numero">
                 Numero:
                 {#if !edit.numero}
-                    {#if !edited.numero}
+                    {#if !edited.id}
                         {selectedOsallistuja.id}
                     {/if}
-                    {#if edited.numero}
-                        {edited.numero}
+                    {#if edited.id}
+                        {edited.id}
                     {/if}
 
                     <button
@@ -171,7 +178,7 @@
                         >🚫</button
                     >
                     <button
-                        on:click={(edited.numero = editing.numero)}
+                        on:click={(edited.id = editing.numero)}
                         on:click={() => (edit.numero = !edit.numero)}>💾</button
                     >
                 {/if}
@@ -243,7 +250,7 @@
                     >
                 {/if}
             </div>
-            <button type="submit" on:click={save}>Tallenna</button>
+            <button type="submit" on:click={save}> Tallenna </button>
         {/if}
     </div>
 </form>

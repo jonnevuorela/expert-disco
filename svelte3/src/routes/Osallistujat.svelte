@@ -51,18 +51,20 @@
 <h1>Osallistujat</h1>
 
 {#if osallistujat.length}
-    <select bind:value={selected_country} on:change={filter}>
-        <option value="">Valitse kansallisuus</option>
-        {#each kansallisuudet as kansallisuus}
-            <option value={kansallisuus}>{kansallisuus}</option>
-        {/each}
-    </select>
-    <select bind:value={selected_sarja} on:change={filter}>
-        <option value="">Valitse sarja</option>
-        {#each sarjat as sarja}
-            <option value={sarja}>{sarja}</option>
-        {/each}
-    </select>
+    <div class="napit">
+        <select bind:value={selected_country} on:change={filter}>
+            <option value="">Valitse kansallisuus</option>
+            {#each kansallisuudet as kansallisuus}
+                <option value={kansallisuus}>{kansallisuus}</option>
+            {/each}
+        </select>
+        <select bind:value={selected_sarja} on:change={filter}>
+            <option value="">Valitse sarja</option>
+            {#each sarjat as sarja}
+                <option value={sarja}>{sarja}</option>
+            {/each}
+        </select>
+    </div>
     <table>
         <tr>
             <th>Kilpailijanumero</th>
@@ -96,7 +98,12 @@
         border-collapse: collapse;
         background-color: goldenrod;
         box-shadow: 5px 5px 15px black;
-        width: 100%;
+        margin-left: 20%;
+        margin-right: 20%;
+        padding-top: 5%;
+        padding-left: 20%;
+        padding-bottom: 10%;
+        width: 60%;
     }
     tr,
     th,
@@ -105,5 +112,10 @@
     }
     tr:nth-child(even) {
         background-color: moccasin;
+    }
+    .napit {
+        display: flex;
+        justify-content: center;
+        margin-top: 2%;
     }
 </style>

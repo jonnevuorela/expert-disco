@@ -1,42 +1,41 @@
 <script>
-    import DataTable from "./DataTable.svelte";
-    import BarChart from "./BarChart.svelte";
+    import Router from "svelte-spa-router";
+    import Fingrid from "./Fingrid.svelte";
+    import Ensto from "./Ensto.svelte";
+    import Home from "./Home.svelte";
 
-    let data;
-    let date_value;
-
-    $: date_value != null ? fetchData(date_value) : null;
-    function fetchData(date_value) {
-        fetch(`http://localhost:5000/e_production?startTime=${date_value}T00:00:0
-    0Z&endTime=${date_value}T23:45:00Z`)
-            .then((response) => {
-                return response.json();
-            })
-            .then((result) => {
-                data = result.data;
-                data = data.map((value) => {
-                    // Tässä muutetaan startTime ja endTime tunnit Suomen aikaan ja
-                    // samalla tehdään stringistä date tyyppinen objekti, jota on helpompi
-                    // käsitellä myöhemmin koodissa
-                    let startTime = new Date(value.startTime);
-                    startTime.setHours(startTime.getHours() - 3);
-                    value.startTime = startTime;
-                    let endTime = new Date(value.endTime);
-                    endTime.setHours(endTime.getHours() - 3);
-                    value.endTime = endTime;
-                    return value;
-                });
-                // Otetaan vain joka neljäs hakutulos, koska näin saadaan yksi
-                // hakutulos per tunti, joka on riittävä graafien
-                // piirtämistä varten tässä
-                data = data.filter((value, index) => index % 4 == 0);
-                console.log(data);
-            });
-    }
+    const routes = {
+        "/": Home,
+        "/fingrid": Fingrid,
+        "/ensto": Ensto,
+    };
 </script>
 
-<h1>Electricity production in Finland</h1>
-<p>Choose the date <input type="date" bind:value={date_value} /></p>
-<DataTable {data} />
-<BarChart {data} />
-```
+<nav>
+    <a href="/#/fingrid">Fingrid</a>
+    <a href="/#/ensto">Ensto</a>
+</nav>
+<Router {routes} />
+
+<style>
+    nav {
+        display: flex;
+        justify-content: center;
+    }
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        text-decoration: none;
+        color: black;
+        text-shadow: 1px 1px 7px sandybrown;
+        box-shadow: 1px 1px 10px black;
+        margin: 0 1rem;
+        background-color: goldenrod;
+        size: 1rem;
+        height: 2rem;
+        width: 5rem;
+        margin-bottom: 1rem;
+    }
+</style>

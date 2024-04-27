@@ -1,5 +1,6 @@
 import requests
-
+import xmltodict
+import json
 from datetime import date
 from flask_cors import CORS
 from flask import Flask, make_response, request
@@ -11,6 +12,32 @@ CORS(app)
 api_key_headers = {
     'x-api-key': API_KEY
 }
+
+@app.route("/testi")
+def makeRequest():
+    PARAMS = {
+    'securityToken': '0c79fd8c-40c4-49fe-916d-7d420abf45ad',
+    'documentType': 'A44', # This is the document for the electricity prices
+    'In_Domain': '10YFI-1--------U', # prices in Finland
+    'Out_Domain': '10YFI-1--------U',
+    'periodStart': '202404130100',
+    'periodEnd': '202404130100'
+    }
+    current_date = date.today()
+    args = request.args
+    start_date = args.get("startDate", default=current_date, type=str)
+    end_date = args.get("endDate", default=current_date, type=str)
+    if start_date:
+        start_date = start_date.replace("-","") + "0100"
+        PARAMS['periodStart'] = start_date
+    if end_date:
+        end_date = end_date.replace("-","") + "0100"
+        PARAMS['periodEnd'] = end_date
+    r = requests.get(url="https://web-api.tp.entsoe.eu/api", params=PARAMS)
+    content = r.content.replace(b"price.amount", b"price")
+    json_obj = json.dumps(xmltodict.parse(content))
+    print(json_obj)
+    return make_response(json_obj, 200)
 
 @app.route("/<path:data_type>")
 def doRequest(data_type):

@@ -1,12 +1,17 @@
 <script>
     import { onMount } from "svelte";
-    import Home from "./Home.svelte";
+
     const url = "https://rata.digitraffic.fi/api/v2/graphql/graphql";
     let schedule;
     let junat;
+    let foo;
+    let bar;
     let asemat = { nimi: "", lyhenne: "" };
-    let userInput = { id: "", station: "", date: "" };
+    let userInput = { id: "", station: " ", date: "" };
     //$: console.log(trains)
+    let inputId;
+    $: console.log("inputId", inputId);
+
     function getOptions() {
         function getAsemat() {
             fetch(`https://rata.digitraffic.fi/api/v1/metadata/stations`, {
@@ -26,7 +31,7 @@
                 })
                 .then((result) => {
                     asemat = result.reduce((acc, item) => {
-                        acc[item.stationShortCode] = item.stationName;
+                        acc[item.stationName] = item.stationName;
                         return acc;
                     }, {});
                 });
@@ -54,21 +59,21 @@
         getAsemat();
         getJunat();
     }
-
     function fetchData() {
         const q1 = {
             query: `{
-              train(trainNumber: ${userInput.id}, departureDate: "${userInput.date}") {
-                timeTableRows {
-                  station {
-                    name
-                  }
+              train(
+                trainNumber: ${userInput.id}
+                departureDate: "${userInput.date}"
+                where: {timeTableRows: {contains: {station: {name: {equals: "${userInput.station}"}}}}}
+              ) {
+                trainNumber
+                timeTableRows(where: {station: {name: {equals: "${userInput.station}"}}}) {
                   scheduledTime
                 }
               }
             }`,
         };
-        console.log(q1.query);
         fetch(url, {
             method: "POST",
             headers: {
@@ -84,17 +89,17 @@
                 return response.json();
             })
             .then((result) => {
-                schedule = result.data.train[0].timeTableRows;
-                console.log("schedule", schedule);
-                schedule = schedule.filter(
-                    (value) => value.station.name === userInput.station,
+                console.log("result", result);
+                schedule = new Date(
+                    result.data.train[0].timeTableRows[0].scheduledTime,
                 );
-                console.log("filtered schedule", schedule);
+                schedule = schedule.toLocaleString("fi-FI", {
+                    timeZone: "Europe/Helsinki",
+                });
             });
     }
+
     onMount(getOptions);
-    $: console.log("id", userInput.id);
-    $: console.log("date", userInput.date);
 </script>
 
 <div class="main">
@@ -112,7 +117,7 @@
         <select bind:value={userInput.station}>
             {#if asemat}
                 {#each Object.entries(asemat) as [code, name]}
-                    <option value={code}>{name} ({code})</option>
+                    <option value={code}>{name}</option>
                 {/each}
             {/if}
         </select>
@@ -120,32 +125,10 @@
         <input bind:value={userInput.date} type="date" />
     </div>
     {#if userInput}
-        <p>Valittu juna: {userInput.id}</p>
-        <p>Valittu asema: {userInput.station}</p>
-        <p>Valittu päivämäärä: {userInput.date}</p>
         <button on:click={fetchData}>Hae</button>
     {/if}
     {#if schedule && schedule.length > 0}
-        <table>
-            <tr>
-                <th>Train number</th>
-                <th>DepartureDate</th>
-                <th>Time</th>
-                <th>Location</th>
-            </tr>
-            {#each schedule as s}
-                <tr>
-                    <td>{s.trainNumber}</td>
-                    <td>{s.departureDate}</td>
-                    {#if s.trainLocations}
-                        <td
-                            >{s.trainLocations[0].timestamp.getHours()}:{s.trainLocations[0].timestamp.getMinutes()}</td
-                        >
-                        <td>{s.trainLocations[0].location}</td>
-                    {/if}
-                </tr>
-            {/each}
-        </table>
+        <p>Juna on perillä valitulla asemalla: {schedule}</p>
     {/if}
 </div>
 

@@ -2,16 +2,19 @@
     import Router from "svelte-spa-router";
     import Home from "./Home.svelte";
     import Tehtävä1 from "./1.svelte";
+    import Tehtävä2 from "./2.svelte";
 
     const routes = {
         "/": Home,
         "/1": Tehtävä1,
+        "/2": Tehtävä2,
     };
 </script>
 
 <nav>
     <a href="/#/">Home</a>
-    <a href="/#/1">Tehtävä 1</a>
+    <a href="/#/1">Tehtävä</a>
+    <a href="/#/2">Tehtävä2</a>
 </nav>
 
 <Router {routes} />
